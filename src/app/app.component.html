@@ -5,3 +5,74 @@
   <a md-button href="https://github.com/emmgfx/ng-mort" target="_blank"><md-icon>code</md-icon> view source</a>
 
 </md-toolbar>
+
+<div class="app-content">
+    
+    <md-card class="example-card">
+      <md-card-header>
+        <md-card-title>Mortgage details</md-card-title>
+        <md-card-subtitle>Basic info</md-card-subtitle>
+      </md-card-header>
+      <md-card-content>
+          
+          <md-input-container class="" style="width: 200px;">
+            <input mdInput type="number" [(ngModel)]="originalRemainingMonths" #remainingMonthsInput max="480" min="0" placeholder="Remaining months" >
+            <md-hint align="end">{{ remainingMonths / 12 }} years</md-hint>
+          </md-input-container>
+          
+          <md-input-container class="" style="width: 200px;">
+            <input mdInput type="number" [(ngModel)]="originalRemainingCapital" #remainingCapitalInput min="0" placeholder="Remaining capital">
+          </md-input-container>
+          
+          <md-input-container class="" style="width: 200px;">
+            <input mdInput type="number" [(ngModel)]="tae" #taeInput max="100" min="0" placeholder="TAE">
+          </md-input-container>
+
+          <md-input-container>
+            <input mdInput [mdDatepicker]="picker" placeholder="Start date" [(ngModel)]="startDate">
+            <button mdSuffix [mdDatepickerToggle]="picker"></button>
+          </md-input-container>
+          <md-datepicker #picker  [startAt]="startDate"></md-datepicker>
+          
+      </md-card-content>
+    </md-card>
+    
+    <br />
+    
+    <md-card class="example-card">
+      <md-card-header>
+        <md-card-title>Amortization table</md-card-title>
+      </md-card-header>
+      <md-card-content>
+          
+          <table cellpadding="10">
+
+              <thead>
+                  <tr>
+                      <th>Month (Year)</th>
+                      <th>Fee</th>
+                      <th>% TAE</th>
+                      <th>Amortization</th>
+                      <th>Interests (Total)</th>
+                      <th>Pending</th>
+                  </tr>
+              </thead>
+
+              <tbody>
+                  
+                  <tr *ngFor="let index of [0,1,2]">
+                      <td>month (year)</td>
+                      <td>fee</td>
+                      <td>tae%</td>
+                      <td>amortization &euro;</td>
+                      <td>interests (sumatory) &euro;</td>
+                      <td>pending &euro;</td>
+                  </tr>
+
+              </tbody>
+          </table>          
+      </md-card-content>
+    </md-card>
+
+
+</div>

@@ -1,12 +1,14 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 
 import { AppComponent } from './app.component';
 
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MdDatepickerModule, MdToolbarModule, MdIconModule,
-  MdButtonModule } from '@angular/material';
+  MdButtonModule, MdCardModule, MdInputModule,
+  MdNativeDateModule } from '@angular/material';
 
 
 import 'hammerjs';
@@ -17,11 +19,15 @@ import 'hammerjs';
   ],
   imports: [
     BrowserModule,
+    FormsModule,
     BrowserAnimationsModule,
     MdDatepickerModule,
     MdToolbarModule,
     MdIconModule,
-    MdButtonModule
+    MdButtonModule,
+    MdCardModule,
+    MdInputModule,
+    MdNativeDateModule
   ],
   providers: [],
   bootstrap: [AppComponent]
