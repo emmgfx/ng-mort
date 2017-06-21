@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'app';
+    
+    remaningYears: number = 40;
+    remaningMonths: number = this.remaningYears * 12;
+    tae: number = 2.7;
+    
+    
+    
 }
