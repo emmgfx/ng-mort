@@ -17,7 +17,7 @@
           
           <md-input-container class="" style="width: 200px;">
             <input mdInput type="number" [(ngModel)]="originalRemainingMonths" #remainingMonthsInput max="480" min="0" placeholder="Remaining months" >
-            <md-hint align="end">{{ remainingMonths / 12 }} years</md-hint>
+            <md-hint align="end">{{ originalRemainingMonths / 12 | number : '1.0-1'}} year/s</md-hint>
           </md-input-container>
           
           <md-input-container class="" style="width: 200px;">
@@ -25,48 +25,54 @@
           </md-input-container>
           
           <md-input-container class="" style="width: 200px;">
-            <input mdInput type="number" [(ngModel)]="tae" #taeInput max="100" min="0" placeholder="TAE">
+            <input mdInput type="number" [(ngModel)]="tae" #taeInput max="100" min="0.01" placeholder="TAE" required>
           </md-input-container>
 
           <md-input-container>
             <input mdInput [mdDatepicker]="picker" placeholder="Start date" [(ngModel)]="startDate">
             <button mdSuffix [mdDatepickerToggle]="picker"></button>
           </md-input-container>
-          <md-datepicker #picker  [startAt]="startDate"></md-datepicker>
+          <md-datepicker #picker  [startAt]="startDate" startView="year"></md-datepicker>
+          
+          <button md-raised-button (click)="calculateFees()">Run</button>
           
       </md-card-content>
     </md-card>
     
     <br />
     
-    <md-card class="example-card">
+    <md-card class="example-card" *ngIf="fees.length > 0">
       <md-card-header>
         <md-card-title>Amortization table</md-card-title>
       </md-card-header>
       <md-card-content>
           
-          <table cellpadding="10">
+          <table cellpadding="10" width="100%">
 
-              <thead>
+              <thead align="left">
                   <tr>
-                      <th>Month (Year)</th>
+                      <th>Month</th>
+                      <th>Year</th>
                       <th>Fee</th>
-                      <th>% TAE</th>
                       <th>Amortization</th>
-                      <th>Interests (Total)</th>
+                      <th>% TAE</th>
+                      <th>Interests</th>
+                      <th>Interests sumatory</th>
                       <th>Pending</th>
                   </tr>
               </thead>
 
-              <tbody>
+              <tbody align="left">
                   
-                  <tr *ngFor="let index of [0,1,2]">
-                      <td>month (year)</td>
-                      <td>fee</td>
-                      <td>tae%</td>
-                      <td>amortization &euro;</td>
-                      <td>interests (sumatory) &euro;</td>
-                      <td>pending &euro;</td>
+                  <tr *ngFor="let fee of fees">
+                      <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
+                      <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
+                      <td><strong>{{ fee.fee | number: '1.2-2' }} &euro;</strong></td>
+                      <td>{{ fee.amortization | number: '1.2-2' }} &euro;</td>
+                      <td>{{ fee.tae }}%</td>
+                      <td>{{ fee.interests }} &euro;</td>
+                      <td>{{ fee.interestsTotal | number: '1.2-2' }} &euro;</td>
+                      <td><strong>{{ fee.pendingCapital | number: '1.2-2' }} &euro;</strong></td>
                   </tr>
 
               </tbody>
