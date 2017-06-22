@@ -9,3 +9,8 @@
 .example-spacer {
   flex: 1 1 auto;
 }
+
+md-input-container{
+    width: 100%;
+    max-width: 250px;
+}
