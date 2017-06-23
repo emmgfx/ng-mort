@@ -8,8 +8,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { MdDatepickerModule, MdToolbarModule, MdIconModule,
   MdButtonModule, MdCardModule, MdInputModule,
-  MdNativeDateModule } from '@angular/material';
-
+  MdNativeDateModule, MdSlideToggleModule } from '@angular/material';
+import { MomentModule } from 'angular2-moment';
 
 import 'hammerjs';
 
@@ -27,7 +27,9 @@ import 'hammerjs';
     MdButtonModule,
     MdCardModule,
     MdInputModule,
-    MdNativeDateModule
+    MdNativeDateModule,
+    MdSlideToggleModule,
+    MomentModule
   ],
   providers: [],
   bootstrap: [AppComponent]

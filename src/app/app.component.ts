@@ -1,18 +1,20 @@
 import { Component, OnInit, AfterViewInit } from '@angular/core';
 import { FormControl, FormBuilder, Validators } from '@angular/forms';
+import * as moment from 'moment';
 
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+    selector: 'app-root',
+    templateUrl: './app.component.html',
+    styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
     
     originalRemainingCapital: number = 95000;
     originalRemainingMonths: number = 480;
     tae: number = 2.09;
-    startDate = new Date();
-    
+    startDate: moment.Moment = moment("2014-10-1", "YYYY-MM-DD").endOf("month");
+    vpa: boolean = false;
     amortizationAmount: number = 3000;
     amortizationFrecuency: number = 12;
     
@@ -20,14 +22,11 @@ export class AppComponent {
     
     working: boolean = false;
     
-    ngOnInit(){
-        // this.calculateFees();
-    }
+    constructor(){}
     
-    ngAfterViewInit() {
-        // this.calculateFees();
-    }
-
+    ngOnInit(){}
+    
+    ngAfterViewInit() {}
     
     calculateFees(){
                 
@@ -41,11 +40,15 @@ export class AppComponent {
         let pendingCapital: number = this.originalRemainingCapital;
         let month: number = 0;
         let year: number = 0;
+        let date: moment.Moment = this.startDate;
+
 
         while( Math.round(pendingCapital * 100) / 100 > 0 && month <= originalRemainingMonths){
             let fee             = Math.round((pendingCapital * (tae/12) / (100 * ( 1 - Math.pow(1 + (tae/12) / 100, (month-originalRemainingMonths))))) * 100) / 100;
             let interests       = Math.round((pendingCapital * (tae/12) / 100) * 100) / 100;
             let amortization    = fee - interests;
+            let _date           = moment(date.add(1, 'm').endOf('month'));
+            
             month++;
             interestsTotal  += interests;
             pendingCapital  -= amortization;
@@ -61,10 +64,15 @@ export class AppComponent {
                 interests: interests,
                 interestsTotal: interestsTotal,
                 pendingCapital: pendingCapital,
-                amortization: amortization
+                amortization: amortization,
+                date: _date
             });
             
-            if(month % this.amortizationFrecuency == 0 && Math.round(pendingCapital * 100) / 100 > this.amortizationAmount){
+            if(
+                this.vpa &&
+                month % this.amortizationFrecuency == 0 &&
+                Math.round(pendingCapital * 100) / 100 > this.amortizationAmount
+            ){
                 pendingCapital -= this.amortizationAmount;
                 this.fees.push({
                     type: 'voluntary',
@@ -74,6 +82,7 @@ export class AppComponent {
                     year: Math.floor((month-1) / 12),
                     amortization: this.amortizationAmount,
                     pendingCapital: pendingCapital,
+                    date: _date
                 });
             }
             

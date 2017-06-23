@@ -30,18 +30,32 @@
             <md-datepicker #picker  [startAt]="startDate" startView="year"></md-datepicker>
             
             
-            <h2>Voluntary periodic amortization</h2>
+            <h2>
+                Voluntary periodic amortization
+                <md-slide-toggle
+                    name="vpa"
+                    [(ngModel)]="vpa"
+                    class="example-margin"
+                    [color]="accent"
+                    [checked]="false"
+                    [disabled]="false">
+                </md-slide-toggle>
+            </h2>
             
-            <md-input-container class="">
-                <input mdInput type="number" [(ngModel)]="amortizationAmount" name="amortizationAmount" #amortizationAmountInput max="{{ originalRemainingCapital }}" min="0" placeholder="Amortization amount" >
-            </md-input-container>
+            <ng-container *ngIf="vpa">
+                <md-input-container class="">
+                    <input mdInput type="number" [(ngModel)]="amortizationAmount" name="amortizationAmount" #amortizationAmountInput max="{{ originalRemainingCapital }}" min="0" placeholder="Amortization amount" >
+                </md-input-container>
+                
+                <md-input-container class="">
+                    <input mdInput type="number" [(ngModel)]="amortizationFrecuency" name="amortizationFrecuency" #amortizationFrecuencyInput max="480" placeholder="Amortization frecuency" >
+                    <md-hint align="end">({{ amortizationAmount }} each {{ amortizationFrecuency }} months)</md-hint>
+                </md-input-container>
+            </ng-container>
             
-            <md-input-container class="">
-                <input mdInput type="number" [(ngModel)]="amortizationFrecuency" name="amortizationFrecuency" #amortizationFrecuencyInput max="480" placeholder="Amortization frecuency" >
-                <md-hint align="end">({{ amortizationAmount }} each {{ amortizationFrecuency }} months)</md-hint>
-            </md-input-container>
-            
-            <button md-raised-button>Run</button>
+            <div>
+                <button md-raised-button>Run</button>
+            </div>
         </form>
     </md-card-content>
 </md-card>
@@ -55,32 +69,33 @@
             <table cellpadding="10" width="100%">
                 <thead align="left">
                     <tr>
-                    <th>Month</th>
-                    <th>Year</th>
-                    <th>Fee</th>
-                    <th>Amortization</th>
-                    <th>% TAE</th>
-                    <th>Interests</th>
-                    <th>Interests sumatory</th>
-                    <th>Pending</th>
+                        <th>Date</th>
+                        <th>Month</th>
+                        <th>Year</th>
+                        <th>Fee</th>
+                        <th>Amortization</th>
+                        <th>Interests</th>
+                        <th>Interests sumatory</th>
+                        <th>Pending</th>
                     </tr>
                 </thead>
                 <tbody align="left">
                     <ng-container *ngFor="let fee of fees">
                         <tr *ngIf="fee.type == 'mandatory'">
+                            <td>{{ fee.date | amDateFormat:'LL' }}</td>
                             <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
                             <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
                             <td><strong>{{ fee.fee | number: '1.2-2' }} &euro;</strong></td>
                             <td>{{ fee.amortization | number: '1.2-2' }} &euro;</td>
-                            <td>{{ fee.tae }}%</td>
                             <td>{{ fee.interests }} &euro;</td>
                             <td>{{ fee.interestsTotal | number: '1.2-2' }} &euro;</td>
                             <td><strong>{{ fee.pendingCapital | number: '1.2-2' }} &euro;</strong></td>
                         </tr>
                         <tr *ngIf="fee.type == 'voluntary'" style="background-color: lightgreen;">
+                            <td>{{ fee.date | amDateFormat:'LL' }}</td>
                             <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
                             <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
-                            <td colspan="6">
+                            <td colspan="5">
                                 <strong>
                                     Voluntary amortization of {{ fee.amortization | number: '1.2-2' }} &euro;
                                     {{ fee.pendingCapital | number: '1.2-2' }} &euro; pending
