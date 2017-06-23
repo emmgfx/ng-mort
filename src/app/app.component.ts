@@ -10,8 +10,12 @@ export class AppComponent {
     
     originalRemainingCapital: number = 95000;
     originalRemainingMonths: number = 480;
-    tae: number = 2.7;
+    tae: number = 2.09;
     startDate = new Date();
+    
+    amortizationAmount: number = 3000;
+    amortizationFrecuency: number = 12;
+    
     fees: Array<any> = [];
     
     working: boolean = false;
@@ -47,6 +51,7 @@ export class AppComponent {
             pendingCapital  -= amortization;
             
             this.fees.push({
+                type: 'mandatory',
                 originalRemainingMonths: originalRemainingMonths,
                 originalRemainingCapital: originalRemainingCapital,
                 month: month,
@@ -58,6 +63,20 @@ export class AppComponent {
                 pendingCapital: pendingCapital,
                 amortization: amortization
             });
+            
+            if(month % this.amortizationFrecuency == 0 && Math.round(pendingCapital * 100) / 100 > this.amortizationAmount){
+                pendingCapital -= this.amortizationAmount;
+                this.fees.push({
+                    type: 'voluntary',
+                    originalRemainingMonths: originalRemainingMonths,
+                    originalRemainingCapital: originalRemainingCapital,
+                    month: month,
+                    year: Math.floor((month-1) / 12),
+                    amortization: this.amortizationAmount,
+                    pendingCapital: pendingCapital,
+                });
+            }
+            
         }
         
         this.working = false;

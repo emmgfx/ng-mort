@@ -7,6 +7,9 @@
 <md-card class="example-card">
     <md-card-content>
         <form (submit)="calculateFees()">
+            
+            <h2>Initial conditions</h2>
+            
             <md-input-container class="">
                 <input mdInput type="number" [(ngModel)]="originalRemainingMonths" name="originalRemainingMonths" #remainingMonthsInput max="480" min="0" placeholder="Remaining months" >
                 <md-hint align="end">{{ originalRemainingMonths / 12 | number : '1.0-1'}} year/s</md-hint>
@@ -25,6 +28,18 @@
                 <button mdSuffix [mdDatepickerToggle]="picker"></button>
             </md-input-container>
             <md-datepicker #picker  [startAt]="startDate" startView="year"></md-datepicker>
+            
+            
+            <h2>Voluntary periodic amortization</h2>
+            
+            <md-input-container class="">
+                <input mdInput type="number" [(ngModel)]="amortizationAmount" name="amortizationAmount" #amortizationAmountInput max="{{ originalRemainingCapital }}" min="0" placeholder="Amortization amount" >
+            </md-input-container>
+            
+            <md-input-container class="">
+                <input mdInput type="number" [(ngModel)]="amortizationFrecuency" name="amortizationFrecuency" #amortizationFrecuencyInput max="480" placeholder="Amortization frecuency" >
+                <md-hint align="end">({{ amortizationAmount }} each {{ amortizationFrecuency }} months)</md-hint>
+            </md-input-container>
             
             <button md-raised-button>Run</button>
         </form>
@@ -51,16 +66,28 @@
                     </tr>
                 </thead>
                 <tbody align="left">
-                    <tr *ngFor="let fee of fees">
-                        <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
-                        <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
-                        <td><strong>{{ fee.fee | number: '1.2-2' }} &euro;</strong></td>
-                        <td>{{ fee.amortization | number: '1.2-2' }} &euro;</td>
-                        <td>{{ fee.tae }}%</td>
-                        <td>{{ fee.interests }} &euro;</td>
-                        <td>{{ fee.interestsTotal | number: '1.2-2' }} &euro;</td>
-                        <td><strong>{{ fee.pendingCapital | number: '1.2-2' }} &euro;</strong></td>
-                    </tr>
+                    <ng-container *ngFor="let fee of fees">
+                        <tr *ngIf="fee.type == 'mandatory'">
+                            <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
+                            <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
+                            <td><strong>{{ fee.fee | number: '1.2-2' }} &euro;</strong></td>
+                            <td>{{ fee.amortization | number: '1.2-2' }} &euro;</td>
+                            <td>{{ fee.tae }}%</td>
+                            <td>{{ fee.interests }} &euro;</td>
+                            <td>{{ fee.interestsTotal | number: '1.2-2' }} &euro;</td>
+                            <td><strong>{{ fee.pendingCapital | number: '1.2-2' }} &euro;</strong></td>
+                        </tr>
+                        <tr *ngIf="fee.type == 'voluntary'" style="background-color: lightgreen;">
+                            <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
+                            <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
+                            <td colspan="6">
+                                <strong>
+                                    Voluntary amortization of {{ fee.amortization | number: '1.2-2' }} &euro;
+                                    {{ fee.pendingCapital | number: '1.2-2' }} &euro; pending
+                                </strong>
+                            </td>
+                        </tr>
+                    </ng-container>
                 </tbody>
             </table>     
         </md-card-content>
