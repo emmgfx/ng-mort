@@ -40,7 +40,7 @@ export class AppComponent {
         let pendingCapital: number = this.originalRemainingCapital;
         let month: number = 0;
         let year: number = 0;
-        let date: moment.Moment = this.startDate;
+        let date: moment.Moment = moment(this.startDate);
 
 
         while( Math.round(pendingCapital * 100) / 100 > 0 && month <= originalRemainingMonths){
