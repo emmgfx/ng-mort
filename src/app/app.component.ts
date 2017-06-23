@@ -18,9 +18,12 @@ export class AppComponent {
     amortizationAmount: number = 3000;
     amortizationFrecuency: number = 12;
     
-    fees: Array<any> = [];
+    feesWithVPA: Array<any> = [];
+    feesWithoutVPA: Array<any> = [];
+    feesTable: Array<any> = [];
+    interestsTotalDiff: number = 0;
     
-    working: boolean = false;
+    limit: number;
     
     constructor(){}
     
@@ -28,10 +31,9 @@ export class AppComponent {
     
     ngAfterViewInit() {}
     
-    calculateFees(){
+    calculateFees(vpa: boolean = false){
                 
-        this.working = true;
-        this.fees = [];
+        let _fees: Array<any> = [];
         
         let originalRemainingMonths = this.originalRemainingMonths;
         let originalRemainingCapital = this.originalRemainingCapital;
@@ -53,7 +55,7 @@ export class AppComponent {
             interestsTotal  += interests;
             pendingCapital  -= amortization;
             
-            this.fees.push({
+            _fees.push({
                 type: 'mandatory',
                 originalRemainingMonths: originalRemainingMonths,
                 originalRemainingCapital: originalRemainingCapital,
@@ -63,33 +65,55 @@ export class AppComponent {
                 tae: this.tae,
                 interests: interests,
                 interestsTotal: interestsTotal,
-                pendingCapital: pendingCapital,
+                pendingCapital: Math.abs(pendingCapital),
                 amortization: amortization,
                 date: _date
             });
             
             if(
-                this.vpa &&
+                vpa &&
                 month % this.amortizationFrecuency == 0 &&
                 Math.round(pendingCapital * 100) / 100 > this.amortizationAmount
             ){
                 pendingCapital -= this.amortizationAmount;
-                this.fees.push({
+                _fees.push({
                     type: 'voluntary',
                     originalRemainingMonths: originalRemainingMonths,
                     originalRemainingCapital: originalRemainingCapital,
                     month: month,
                     year: Math.floor((month-1) / 12),
                     amortization: this.amortizationAmount,
-                    pendingCapital: pendingCapital,
+                    pendingCapital: Math.abs(pendingCapital),
                     date: _date
                 });
             }
             
         }
         
-        this.working = false;
+        return _fees;
     }
     
+    run(){
+        this.limit = 30;
+        if(this.vpa){
+            this.feesWithVPA = this.calculateFees(true);
+            this.feesWithoutVPA = this.calculateFees(false);
+            this.feesTable = this.feesWithVPA;
+            
+            this.interestsTotalDiff =
+                this.feesWithoutVPA[this.feesWithoutVPA.length-1].interestsTotal -
+                this.feesWithVPA[this.feesWithVPA.length-1].interestsTotal;
+                
+        }else{
+            this.feesWithVPA = [];
+            this.feesWithoutVPA = this.calculateFees(false);
+            this.feesTable = this.feesWithoutVPA;
+            this.interestsTotalDiff = 0;
+        }
+    }
+    
+    increaseLimit(){
+        this.limit += 100;
+    }
     
 }

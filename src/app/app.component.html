@@ -6,7 +6,7 @@
 
 <md-card class="example-card">
     <md-card-content>
-        <form (submit)="calculateFees()">
+        <form (submit)="run()">
             
             <h2>Initial conditions</h2>
             
@@ -61,9 +61,10 @@
 </md-card>
 
 <div class="app-content">
-    <md-card class="example-card" *ngIf="fees.length > 0">
+    <md-card class="example-card" *ngIf="feesTable.length > 0">
         <md-card-header>
-            <md-card-title>Amortization table</md-card-title>
+            <md-card-title><strong>Amortization table</strong></md-card-title>
+            <md-card-subtitle *ngIf="interestsTotalDiff > 0">You save {{ interestsTotalDiff | number: '1.2-2' }} &euro; in interests</md-card-subtitle>
         </md-card-header>
         <md-card-content>
             <table cellpadding="10" width="100%">
@@ -80,8 +81,8 @@
                     </tr>
                 </thead>
                 <tbody align="left">
-                    <ng-container *ngFor="let fee of fees">
-                        <tr *ngIf="fee.type == 'mandatory'">
+                    <ng-container *ngFor="let fee of feesTable; let i = index">
+                        <tr *ngIf="fee.type == 'mandatory' && i < limit">
                             <td>{{ fee.date | amDateFormat:'LL' }}</td>
                             <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
                             <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
@@ -91,7 +92,7 @@
                             <td>{{ fee.interestsTotal | number: '1.2-2' }} &euro;</td>
                             <td><strong>{{ fee.pendingCapital | number: '1.2-2' }} &euro;</strong></td>
                         </tr>
-                        <tr *ngIf="fee.type == 'voluntary'" style="background-color: lightgreen;">
+                        <tr *ngIf="fee.type == 'voluntary' && i < limit" style="background-color: lightgreen;">
                             <td>{{ fee.date | amDateFormat:'LL' }}</td>
                             <td>{{ fee.month }} of {{ fee.originalRemainingMonths }}</td>
                             <td>{{ fee.year }} of {{ fee.originalRemainingMonths/12 | number : '1.0-0' }}</td>
@@ -104,6 +105,14 @@
                         </tr>
                     </ng-container>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td align="center" colspan="8">
+                            <button md-button (click)="increaseLimit()" *ngIf="limit < feesTable.length">View more</button>
+                            <p *ngIf="limit > feesTable.length" style="font-size: 50px;">✌️</p>
+                        </td>
+                    </tr>
+                </tfoot>
             </table>     
         </md-card-content>
     </md-card>
