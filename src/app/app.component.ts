@@ -39,7 +39,10 @@ export class AppComponent {
     ];
     public lineChartLabels:Array<any> = [];
     public lineChartOptions:any = {
-      responsive: true
+      responsive: true,
+      steppedLine: false,
+      pointBackgroundColor: 'transparent',
+      pointBorderColor: 'transparent'
     };
     public lineChartColors:Array<any> = [
         { // grey
@@ -102,10 +105,13 @@ export class AppComponent {
         let date: moment.Moment = moment(this.startDate);
 
         this.lineChartLabels = [];
-        this.lineChartData[0].data = [];
-        this.lineChartData[1].data = [];
-        this.lineChartData[2].data = [];
-        this.lineChartData[3].data = [];
+        if(vpa){
+            this.lineChartData[2].data = [];
+            this.lineChartData[3].data = [];
+        }else{
+            this.lineChartData[0].data = [];
+            this.lineChartData[1].data = [];            
+        }
 
         while( Math.round(pendingCapital * 100) / 100 > 0 && month <= originalRemainingMonths){
             let fee             = Math.round((pendingCapital * (tae/12) / (100 * ( 1 - Math.pow(1 + (tae/12) / 100, (month-originalRemainingMonths))))) * 100) / 100;
@@ -150,16 +156,16 @@ export class AppComponent {
                 });
             }
                         
-            this.lineChartLabels.push(month);
-            if(vpa){
-                this.lineChartData[2].data.push(fee);
-                this.lineChartData[3].data.push(interests);
-            }else{
-                this.lineChartData[0].data.push(fee);
-                this.lineChartData[1].data.push(interests);
-                this.lineChartData[2].data = [];
-                this.lineChartData[3].data = [];
-            }
+            // if(month%10==0){
+                this.lineChartLabels.push(month);
+                if(vpa){
+                    this.lineChartData[2].data.push(fee);
+                    this.lineChartData[3].data.push(interests);
+                }else{
+                    this.lineChartData[0].data.push(fee);
+                    this.lineChartData[1].data.push(interests);
+                }
+            // }
 
         }
         
