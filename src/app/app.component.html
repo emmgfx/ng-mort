@@ -67,6 +67,16 @@
             <md-card-subtitle *ngIf="interestsTotalDiff > 0">You save {{ interestsTotalDiff | number: '1.2-2' }} &euro; in interests</md-card-subtitle>
         </md-card-header>
         <md-card-content>
+            
+            <canvas baseChart width="400" height="100"
+                [datasets]="lineChartData"
+                [labels]="lineChartLabels"
+                [options]="lineChartOptions"
+                [colors]="lineChartColors"
+                [legend]="lineChartLegend"
+                [chartType]="lineChartType"></canvas>
+
+
             <table cellpadding="10" width="100%">
                 <thead align="left">
                     <tr>

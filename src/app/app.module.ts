@@ -10,7 +10,7 @@ import { MdDatepickerModule, MdToolbarModule, MdIconModule,
   MdButtonModule, MdCardModule, MdInputModule,
   MdNativeDateModule, MdSlideToggleModule } from '@angular/material';
 import { MomentModule } from 'angular2-moment';
-
+import { ChartsModule } from 'ng2-charts';
 import 'hammerjs';
 
 @NgModule({
@@ -29,7 +29,8 @@ import 'hammerjs';
     MdInputModule,
     MdNativeDateModule,
     MdSlideToggleModule,
-    MomentModule
+    MomentModule,
+    ChartsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

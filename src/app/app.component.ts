@@ -24,6 +24,63 @@ export class AppComponent {
     interestsTotalDiff: number = 0;
     
     limit: number;
+
+
+
+
+
+    public lineChartData:Array<any> = [
+        {data: [], label: 'Without VPA fee'},
+        {data: [], label: 'Without VPA interests'},
+        {data: [], label: 'With VPA fee'},
+        {data: [], label: 'With VPA interests'},
+        // {data: [100, 80, 50, 20, 0], label: 'With VPA fee'},
+        // {data: [100, 80, 50, 20, 0], label: 'With VPA interests'},
+    ];
+    public lineChartLabels:Array<any> = [];
+    public lineChartOptions:any = {
+      responsive: true
+    };
+    public lineChartColors:Array<any> = [
+        { // grey
+          backgroundColor: 'rgba(148,159,177,0.2)',
+          borderColor: 'rgba(148,159,177,1)',
+          pointBackgroundColor: 'rgba(148,159,177,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+        },
+        { // dark grey
+          backgroundColor: 'rgba(77,83,96,0.2)',
+          borderColor: 'rgba(77,83,96,1)',
+          pointBackgroundColor: 'rgba(77,83,96,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(77,83,96,1)'
+        },
+        { // grey
+          backgroundColor: 'rgba(148,159,177,0.2)',
+          borderColor: 'rgba(148,159,177,1)',
+          pointBackgroundColor: 'rgba(148,159,177,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(148,159,177,0.8)'
+        },
+        { // dark grey
+          backgroundColor: 'rgba(77,83,96,0.2)',
+          borderColor: 'rgba(77,83,96,1)',
+          pointBackgroundColor: 'rgba(77,83,96,1)',
+          pointBorderColor: '#fff',
+          pointHoverBackgroundColor: '#fff',
+          pointHoverBorderColor: 'rgba(77,83,96,1)'
+        },
+    ];
+    public lineChartLegend:boolean = false;
+    public lineChartType:string = 'line';
+
+
+
+
     
     constructor(){}
     
@@ -44,6 +101,11 @@ export class AppComponent {
         let year: number = 0;
         let date: moment.Moment = moment(this.startDate);
 
+        this.lineChartLabels = [];
+        this.lineChartData[0].data = [];
+        this.lineChartData[1].data = [];
+        this.lineChartData[2].data = [];
+        this.lineChartData[3].data = [];
 
         while( Math.round(pendingCapital * 100) / 100 > 0 && month <= originalRemainingMonths){
             let fee             = Math.round((pendingCapital * (tae/12) / (100 * ( 1 - Math.pow(1 + (tae/12) / 100, (month-originalRemainingMonths))))) * 100) / 100;
@@ -87,7 +149,18 @@ export class AppComponent {
                     date: _date
                 });
             }
-            
+                        
+            this.lineChartLabels.push(month);
+            if(vpa){
+                this.lineChartData[2].data.push(fee);
+                this.lineChartData[3].data.push(interests);
+            }else{
+                this.lineChartData[0].data.push(fee);
+                this.lineChartData[1].data.push(interests);
+                this.lineChartData[2].data = [];
+                this.lineChartData[3].data = [];
+            }
+
         }
         
         return _fees;
