@@ -1,3 +1,7 @@
+> ⚠️ **This project is outdated and shouldn't be used or taken as example. It's replaced by rmort**:
+>  - https://rmort.vercel.app
+>  - https://github.com/emmgfx/rmort
+
 # NgMortApp
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.1.2.
